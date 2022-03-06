@@ -1,0 +1,8 @@
+/node_modules
+/public/storage
+/vendor
+/.idea
+/.vscode
+/.vagrant
+.env
+/package-lock.json

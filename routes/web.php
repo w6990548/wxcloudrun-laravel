@@ -23,3 +23,6 @@ Route::get('/api/count', 'CounterController@getCount');
 
 // 更新计数，自增或者清零
 Route::post('/api/count', 'CounterController@updateCount');
+
+// 下载并获取图片地址
+Route::get('/api/download/image', 'CounterController@image');
