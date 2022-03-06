@@ -108,20 +108,37 @@ class CounterController extends Controller
 
         $url = $request->get('url');
         list($arr, $video_url) = $this->douYin($url);
-
-        if (Str::startsWith($video_url, 'http://') || Str::startsWith($video_url, 'https://')) {
-            $client = new Client(['verify' => false]);
-            $tempFilename = Str::random();
-            $data = $client->get($video_url)->getBody()->getContents();
-            $filePath = storage_path('app/public/' . date('Y-m-d'));
-            if (!is_dir($filePath)) {
-                mkdir($filePath, 0755, true);
+        try {
+            if (Str::startsWith($video_url, 'http://') || Str::startsWith($video_url, 'https://')) {
+                $client = new Client(['verify' => false]);
+                $tempFilename = Str::random();
+                $data = $client->get($video_url)->getBody()->getContents();
+                $filePath = storage_path('app/public/' . date('Y-m-d'));
+                if (!is_dir($filePath)) {
+                    mkdir($filePath, 0755, true);
+                }
+                file_put_contents($filePath . '/' . $tempFilename . '.jpeg', $data);
+                $res = [
+                    "code" => 0,
+                    "data" => [
+                        'url' => asset(Storage::url(date('Y-m-d') . '/' . $tempFilename . '.jpeg'))
+                    ]
+                ];
+                return response()->json($res);
+            } else {
+                $res = [
+                    "code" => -1,
+                    "data" => [],
+                ];
+                return response()->json($res);
             }
-            file_put_contents($filePath . '/' . $tempFilename . '.jpeg', $data);
-            return [
-                "code" => 0,
-                "url" => asset(Storage::url(date('Y-m-d') . '/' . $tempFilename . '.jpeg'))
+        } catch (Exception $e) {
+            $res = [
+                "code" => -1,
+                "data" => [],
+                "errorMsg" => ("请求异常" . $e->getMessage())
             ];
+            return response()->json($res);
         }
     }
 
