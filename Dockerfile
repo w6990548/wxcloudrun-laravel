@@ -24,6 +24,8 @@ WORKDIR /app
 # 将当前目录下所有文件拷贝到/app
 COPY . /app
 
+RUN php artisan storage:link
+
 # 替换nginx、fpm、php配置
 RUN cp /app/conf/nginx.conf /etc/nginx/conf.d/default.conf \
     && cp /app/conf/fpm.conf /etc/php7/php-fpm.d/www.conf \
